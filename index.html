@@ -57,12 +57,7 @@ textarea{min-height:80px;resize:vertical}
 @keyframes sp{to{transform:rotate(360deg)}}
 .lm{font-family:'Anton',sans-serif;font-size:18px;color:#dce125}
 #out{display:none}
-.slider-wrap{margin-bottom:16px}
-.slider-labels{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-top:6px}
-.slider-val{text-align:center;font-size:11px;color:#dce125;margin-top:6px;font-family:'Anton',sans-serif;letter-spacing:.05em}
-input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,#dce125 50%,#333 50%);border:none;padding:0;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#dce125;cursor:pointer;border:2px solid #0f0f0f}
-input[type=range]:focus{outline:none}
+
 .tog-wrap{display:flex;gap:8px;margin-bottom:6px}
 .tog-btn{background:transparent;border:.5px solid #333;color:#555;border-radius:6px;padding:8px 24px;font-family:'Chivo Mono',monospace;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
 .tog-btn.on{border-color:#dce125;color:#dce125;background:#dce12512}
@@ -110,12 +105,7 @@ input[type=range]:focus{outline:none}
       </div>
       <div id="otg-note" class="otg-note">SOME MEALS WILL BE SOURCED FROM PRET, LEON, ITSU, STARBUCKS, M&S FOOD, TESCO, SAINSBURYS, BOOTS ETC.</div>
     </div>
-    <div class="slider-wrap">
-      <div class="lbl">FOOD VOLUME PREFERENCE</div>
-      <input type="range" id="vol" min="1" max="5" value="3" step="1" oninput="updateVol(this.value)">
-      <div class="slider-labels"><span>LOW VOLUME</span><span>HIGH VOLUME</span></div>
-      <div class="slider-val" id="vol-label">BALANCED</div>
-    </div>
+
     <button class="btn" onclick="go()">GENERATE MY WEEK</button>
   </div>
 
@@ -138,14 +128,7 @@ input[type=range]:focus{outline:none}
 
 <script>
 var LM=["BUILDING YOUR MEAL PLAN...","CALCULATING YOUR MACROS...","WRITING YOUR RECIPES...","ALMOST THERE..."];
-var VOL_LABELS=["LOW VOLUME - CALORIE DENSE","LEAN GAIN FOCUSED","BALANCED","DIET FRIENDLY","HIGH VOLUME - FILLING FOODS"];
-var VOL_DESC=[
-  "calorie-dense, low-fibre foods: nut butters, whole eggs, full-fat dairy, white rice, pasta, granola, olive oil. Avoid high-volume vegetables and low-calorie fillers.",
-  "moderately calorie-dense foods with some protein variety. Lean meats, whole grains, some dairy. Moderate vegetable portions.",
-  "a balance of calorie-dense and volume foods. Mix of lean and fatty proteins, complex carbs, moderate vegetables.",
-  "higher volume, lower calorie density. Lean proteins (chicken breast, turkey, egg whites), large vegetable portions, oats, sweet potato, 0% Greek yoghurt, fruit.",
-  "maximum volume, very high-fibre, low calorie density. Bulk vegetables, egg whites, lean white fish, cottage cheese, large salads, cauliflower rice, high water-content foods."
-];
+var VOL_DESC=["a balanced mix of calorie-dense and volume foods. Use lean proteins, complex carbs, moderate healthy fats, and a good portion of vegetables in each meal. Meals should be satisfying and filling without being excessive."];
 var li=0,lv,otgOn=false;
 
 function setOtg(val){
@@ -309,7 +292,7 @@ function go(){
   var numDays=document.getElementById('days').value;
   var diet=document.getElementById('diet').value;
   var ing=document.getElementById('ing').value;
-  var vol=parseInt(document.getElementById('vol').value);
+  var vol=3;
   var err=document.getElementById('err');
   err.style.display='none';
   if(!cal||!pro||!mls){err.textContent='PLEASE FILL IN CALORIES, PROTEIN AND MEALS PER DAY.';err.style.display='block';return;}
