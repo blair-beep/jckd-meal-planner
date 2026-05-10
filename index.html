@@ -61,10 +61,9 @@ input:focus{border-color:#dce125}
   <div id="form" class="card">
     <div class="sec">YOUR TARGETS</div>
     <div id="err" class="err" style="display:none"></div>
-    <div class="g3">
+    <div class="g2" style="margin-bottom:16px">
       <div><div class="lbl">DAILY CALORIES</div><input id="cal" type="number" placeholder="E.G. 2200"></div>
       <div><div class="lbl">PROTEIN (G)</div><input id="pro" type="number" placeholder="E.G. 180"></div>
-      <div><div class="lbl">MEALS PER DAY</div><input id="mls" type="number" placeholder="E.G. 3" min="1" max="6"></div>
     </div>
     <div class="g2" style="margin-bottom:16px">
       <div><div class="lbl">DIETARY PREFERENCE</div><input id="diet" type="text" placeholder="E.G. NO PORK"></div>
@@ -98,7 +97,7 @@ input:focus{border-color:#dce125}
 </div>
 
 <script>
-var LM = ["BUILDING YOUR MEAL IDEAS...", "CALCULATING YOUR MACROS...", "WRITING YOUR RECIPES...", "ALMOST THERE..."];
+var LM = ["BUILDING YOUR MEAL IDEAS...", "WRITING YOUR RECIPES...", "ALMOST THERE..."];
 var li = 0, lv, otgOn = false;
 
 function setOtg(val) {
@@ -139,14 +138,14 @@ function buildPrompt(cal, pro, mls, diet, ing) {
   var dietLine = diet ? 'Dietary restrictions: ' + diet + '\n' : '';
   var ingLine = ing ? 'Ingredients the user already has (prioritise using these): ' + ing + '\n' : '';
 
-  return 'You are a nutrition coach. Generate meal ideas for a client based on their targets.\n'
-    + 'Daily calorie target: ' + cal + ' kcal. Daily protein target: ' + pro + 'g. Meals per day: ' + mls + '.\n'
+  return 'You are a nutrition coach. Generate meal ideas for a client based on their daily targets.\n'
+    + 'Daily calorie target: ' + cal + ' kcal. Daily protein target: ' + pro + 'g.\n'
     + dietLine + ingLine
     + otgSection + '\n\n'
-    + 'Generate the following meal options. Each category should have exactly 3 options:\n'
-    + '- 3 BREAKFAST options (target ~' + mainCals + ' kcal, ~' + mainPro + 'g protein each)\n'
-    + '- 3 LUNCH options (target ~' + mainCals + ' kcal, ~' + mainPro + 'g protein each)\n'
-    + '- 3 DINNER options (target ~' + mainCals + ' kcal, ~' + mainPro + 'g protein each)\n'
+    + 'Generate exactly 3 options for each of the following 5 categories:\n'
+    + '- 3 BREAKFAST options (target ~' + Math.round(cal * 0.25) + ' kcal, ~' + Math.round(pro * 0.25) + 'g protein each)\n'
+    + '- 3 LUNCH options (target ~' + Math.round(cal * 0.3) + ' kcal, ~' + Math.round(pro * 0.3) + 'g protein each)\n'
+    + '- 3 DINNER options (target ~' + Math.round(cal * 0.35) + ' kcal, ~' + Math.round(pro * 0.35) + 'g protein each)\n'
     + '- 3 DAYTIME SNACK options (high protein, target ~150-200 kcal, ~15-20g protein each)\n'
     + '- 3 EVENING SNACK options (sweet treat style, target ~150-200 kcal, ~10-15g protein each)\n\n'
     + 'JCKD RECIPE LIBRARY - Use these recipes where appropriate (already scaled to 1 portion):\n\n'
@@ -169,14 +168,14 @@ function buildPrompt(cal, pro, mls, diet, ing) {
 function go() {
   var cal = document.getElementById('cal').value;
   var pro = document.getElementById('pro').value;
-  var mls = document.getElementById('mls').value;
+  var mls = 3;
   var diet = document.getElementById('diet').value;
   var ing = document.getElementById('ing').value;
   var err = document.getElementById('err');
 
   err.style.display = 'none';
-  if (!cal || !pro || !mls) {
-    err.textContent = 'PLEASE FILL IN CALORIES, PROTEIN AND MEALS PER DAY.';
+  if (!cal || !pro) {
+    err.textContent = 'PLEASE FILL IN YOUR CALORIE AND PROTEIN TARGETS.';
     err.style.display = 'block';
     return;
   }
@@ -203,7 +202,7 @@ function go() {
   }).then(function(d) {
     var txt = (d.content || []).reduce(function(a, b) { return a + (b.type === 'text' ? b.text : ''); }, '');
     var plan = JSON.parse(txt.replace(/```json|```/g, '').trim());
-    render(plan, parseInt(cal), parseInt(pro), parseInt(mls));
+    render(plan, parseInt(cal), parseInt(pro));
   }).catch(function(e) {
     clearInterval(lv);
     document.getElementById('loading').style.display = 'none';
@@ -238,24 +237,14 @@ function renderCategory(title, items, prefix) {
   return html;
 }
 
-function render(plan, cal, pro, mls) {
+function render(plan, cal, pro) {
   document.getElementById('loading').style.display = 'none';
-
-  var snacks = mls >= 5 ? 2 : mls === 4 ? 1 : 0;
-
   var html = '';
   html += renderCategory('BREAKFASTS', plan.breakfasts, 'b');
   html += renderCategory('LUNCHES', plan.lunches, 'l');
   html += renderCategory('DINNERS', plan.dinners, 'd');
-  if (snacks > 0) html += renderCategory('DAYTIME SNACKS', plan.daySnacks, 'ds');
-  if (snacks > 1) html += renderCategory('EVENING SNACKS', plan.eveningSnacks, 'es');
-
-  // Always show both snack categories regardless of meals input
-  if (snacks === 0) {
-    html += renderCategory('DAYTIME SNACKS', plan.daySnacks, 'ds');
-    html += renderCategory('EVENING SNACKS', plan.eveningSnacks, 'es');
-  }
-
+  html += renderCategory('DAYTIME SNACKS', plan.daySnacks, 'ds');
+  html += renderCategory('EVENING SNACKS', plan.eveningSnacks, 'es');
   document.getElementById('results').innerHTML = html;
   document.getElementById('out').style.display = 'block';
 }
