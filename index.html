@@ -81,17 +81,6 @@ textarea{min-height:80px;resize:vertical}
       <div><div class="lbl">DAILY CALORIES</div><input id="cal" type="number" placeholder="E.G. 2200"></div>
       <div><div class="lbl">PROTEIN (G)</div><input id="pro" type="number" placeholder="E.G. 180"></div>
       <div><div class="lbl">MEALS PER DAY</div><input id="mls" type="number" placeholder="E.G. 4" min="1" max="6"></div>
-      <div><div class="lbl">DAYS TO PLAN</div>
-        <select id="days">
-          <option value="1">1 DAY</option>
-          <option value="2">2 DAYS</option>
-          <option value="3">3 DAYS</option>
-          <option value="4">4 DAYS</option>
-          <option value="5">5 DAYS</option>
-          <option value="6">6 DAYS</option>
-          <option value="7" selected>7 DAYS</option>
-        </select>
-      </div>
     </div>
     <div class="g3" style="margin-bottom:16px">
       <div><div class="lbl">DIETARY PREFERENCE</div><input id="diet" type="text" placeholder="E.G. NO PORK"></div>
@@ -233,7 +222,7 @@ function buildPrompt(cal,pro,mls,numDays,diet,ing,vol,dayLabels){
     +'Peppered Steak With Noodles: 450g skirt steak, soy sauce, shaohsing wine, garlic, ginger, cornflour, sesame oil, onion, red and yellow pepper, sesame seeds, crushed black peppercorns, 500g cooked noodles. Sear steak, stir fry veg with sauce, combine. Portions: 4. Per portion: 479 kcal, 36g protein.\n'
     +'Fish Tacos: 500g white fish fillets, cumin, coriander, smoked paprika, 2 limes, red cabbage, 2 tomatoes, 2 avocados, 8 small tortilla wraps, coriander, green chilli, 100g soured cream, chilli sauce. Grill spiced fish, assemble tacos with slaw and avocado. Portions: 4. Per portion: 665 kcal, 33g protein.\n'
     +'Chicken Tagine: 8 boneless chicken thighs, 2 tbsp olive oil, 1 onion, 2 tsp fresh ginger, saffron or turmeric, 1 tbsp honey, 400g carrots cut into sticks, parsley, lemon wedges. Simmer covered for 30 mins in 150ml water with spices and carrots. Portions: 4. Per portion: 304 kcal, 39g protein.\n\n'
-    +'IMPORTANT: When using a recipe from the JCKD library, adapt portion sizes to hit the user targets. You can scale ingredients up or down. Use the original recipe name. Where the library recipe does not fit the targets or volume preference, create your own recipe following the same rules.\n\n'
+    +'IMPORTANT: When using a recipe from the JCKD library, you may scale ingredients up or down to hit the user targets. Use the original recipe name. CRITICAL: whenever you scale a recipe, you MUST recalculate the calories and protein from scratch using the actual ingredient quantities - never copy the macro numbers from the original recipe card. Calculate each ingredient separately using the reference table, sum them up, then divide by number of portions. Where the library recipe does not fit the targets or volume preference, create your own recipe following the same rules.\n\n'
     +'RECIPE STYLE GUIDE: When creating your own recipes (outside the JCKD library), follow this style: simple, whole food ingredients that look and sound appealing. Think high-protein meals that feel fresh and modern rather than diet food - e.g. cottage cheese bowls, Greek yoghurt-based sauces, lean mince dishes with vibrant veg, rice bowls with bold flavours, egg-based meals with greens. Avoid beige, bland or overly processed meals. Meals should feel like something you would genuinely want to eat and photograph. Prioritise ingredients like eggs, Greek yoghurt, chicken, turkey mince, lean beef, smoked salmon, oats, sweet potato, rice, avocado, leafy greens, herbs and spices. Keep recipes simple - no more than 8 ingredients and straightforward to cook.\n\n'
     +'INGREDIENT REFERENCE TABLE - use these exact values per 100g/100ml unless stated:\n'
     +'Chicken breast (raw): 110 kcal, 23g protein per 100g\n'
@@ -289,22 +278,8 @@ function go(){
   var cal=document.getElementById('cal').value;
   var pro=document.getElementById('pro').value;
   var mls=document.getElementById('mls').value;
-  var numDays=document.getElementById('days').value;
-  var diet=document.getElementById('diet').value;
-  var ing=document.getElementById('ing').value;
-  var vol=3;
-  var err=document.getElementById('err');
-  err.style.display='none';
-  if(!cal||!pro||!mls){err.textContent='PLEASE FILL IN CALORIES, PROTEIN AND MEALS PER DAY.';err.style.display='block';return;}
-
-  document.getElementById('form').style.display='none';
-  document.getElementById('loading').style.display='block';
-  li=0;
-  document.getElementById('lmsg').textContent=LM[0];
-  lv=setInterval(function(){li=(li+1)%LM.length;document.getElementById('lmsg').textContent=LM[li];},2200);
-
-  var dayLabels=[];
-  for(var i=0;i<parseInt(numDays);i++){dayLabels.push('Day '+(i+1));}
+  var numDays='1';
+  var dayLabels=['Day 1'];
 
   var prompt=buildPrompt(cal,pro,mls,numDays,diet,ing,vol,dayLabels);
 
