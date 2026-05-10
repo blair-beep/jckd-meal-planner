@@ -13,12 +13,11 @@ body{background:#0f0f0f;color:#e8e8e8;font-family:'Chivo Mono',monospace;font-si
 .logo{font-family:'Anton',sans-serif;font-size:28px;color:#dce125}
 .card{background:#1a1a1a;border:.5px solid #2e2e2e;border-radius:10px;padding:20px;margin-bottom:16px}
 .sec{font-family:'Anton',sans-serif;font-size:18px;color:#dce125;margin-bottom:16px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
 .lbl{font-size:11px;color:#888;margin-bottom:6px}
-input[type=text],input[type=number],textarea,select{width:100%;background:#111;border:.5px solid #333;border-radius:6px;padding:10px 12px;color:#e8e8e8;font-family:'Chivo Mono',monospace;font-size:13px;text-transform:uppercase;outline:none}
-input:focus,textarea:focus,select:focus{border-color:#dce125}
-select option{background:#111}
+input[type=text],input[type=number],textarea{width:100%;background:#111;border:.5px solid #333;border-radius:6px;padding:10px 12px;color:#e8e8e8;font-family:'Chivo Mono',monospace;font-size:13px;text-transform:uppercase;outline:none}
+input:focus,textarea:focus{border-color:#dce125}
 textarea{min-height:80px;resize:vertical}
 .btn{background:#dce125;color:#0f0f0f;border:none;border-radius:6px;padding:14px;font-family:'Anton',sans-serif;font-size:18px;cursor:pointer;width:100%}
 .btn:hover{opacity:.88}
@@ -57,12 +56,11 @@ textarea{min-height:80px;resize:vertical}
 @keyframes sp{to{transform:rotate(360deg)}}
 .lm{font-family:'Anton',sans-serif;font-size:18px;color:#dce125}
 #out{display:none}
-
 .tog-wrap{display:flex;gap:8px;margin-bottom:6px}
 .tog-btn{background:transparent;border:.5px solid #333;color:#555;border-radius:6px;padding:8px 24px;font-family:'Chivo Mono',monospace;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
 .tog-btn.on{border-color:#dce125;color:#dce125;background:#dce12512}
 .otg-note{font-size:10px;color:#555;margin-top:6px;display:none}
-@media(max-width:580px){.g4,.g3,.sg{grid-template-columns:1fr 1fr}.sc2{columns:1}}
+@media(max-width:580px){.g3,.g2,.sg{grid-template-columns:1fr 1fr}.sc2{columns:1}}
 </style>
 </head>
 <body>
@@ -77,14 +75,14 @@ textarea{min-height:80px;resize:vertical}
   <div id="form" class="card">
     <div class="sec">YOUR TARGETS</div>
     <div id="err" class="err" style="display:none"></div>
-    <div class="g4">
+    <div class="g3">
       <div><div class="lbl">DAILY CALORIES</div><input id="cal" type="number" placeholder="E.G. 2200"></div>
       <div><div class="lbl">PROTEIN (G)</div><input id="pro" type="number" placeholder="E.G. 180"></div>
       <div><div class="lbl">MEALS PER DAY</div><input id="mls" type="number" placeholder="E.G. 4" min="1" max="6"></div>
     </div>
-    <div class="g3" style="margin-bottom:16px">
+    <div class="g2">
       <div><div class="lbl">DIETARY PREFERENCE</div><input id="diet" type="text" placeholder="E.G. NO PORK"></div>
-      <div style="grid-column:span 2"><div class="lbl">INGREDIENTS YOU ALREADY HAVE AT HOME</div><input id="ing" type="text" placeholder="E.G. CHICKEN BREAST, RICE, OLIVE OIL, EGGS..."></div>
+      <div><div class="lbl">INGREDIENTS YOU ALREADY HAVE</div><input id="ing" type="text" placeholder="E.G. CHICKEN, RICE, EGGS..."></div>
     </div>
     <div style="margin-bottom:16px">
       <div class="lbl">INCLUDE ON-THE-GO MEALS?</div>
@@ -92,9 +90,8 @@ textarea{min-height:80px;resize:vertical}
         <button id="btn-no" class="tog-btn on" onclick="setOtg(false)">NO</button>
         <button id="btn-yes" class="tog-btn" onclick="setOtg(true)">YES</button>
       </div>
-      <div id="otg-note" class="otg-note">SOME MEALS WILL BE SOURCED FROM PRET, LEON, ITSU, STARBUCKS, M&S FOOD, TESCO, SAINSBURYS, BOOTS ETC.</div>
+      <div id="otg-note" class="otg-note">SOME MEALS WILL BE SOURCED FROM PRET, LEON, ITSU, STARBUCKS, M&S FOOD, TESCO, SAINSBURYS ETC.</div>
     </div>
-
     <button class="btn" onclick="go()">GENERATE MY PLAN</button>
   </div>
 
@@ -116,244 +113,242 @@ textarea{min-height:80px;resize:vertical}
 </div>
 
 <script>
-var LM=["BUILDING YOUR MEAL PLAN...","CALCULATING YOUR MACROS...","WRITING YOUR RECIPES...","ALMOST THERE..."];
-var VOL_DESC=["a balanced mix of calorie-dense and volume foods. Use lean proteins, complex carbs, moderate healthy fats, and a good portion of vegetables in each meal. Meals should be satisfying and filling without being excessive."];
-var li=0,lv,otgOn=false;
+var LM = ["BUILDING YOUR MEAL PLAN...", "CALCULATING YOUR MACROS...", "WRITING YOUR RECIPES...", "ALMOST THERE..."];
+var li = 0, lv, otgOn = false;
 
-function setOtg(val){
-  otgOn=val;
-  document.getElementById('btn-yes').classList.toggle('on',val);
-  document.getElementById('btn-no').classList.toggle('on',!val);
-  document.getElementById('otg-note').style.display=val?'block':'none';
+function setOtg(val) {
+  otgOn = val;
+  document.getElementById('btn-yes').classList.toggle('on', val);
+  document.getElementById('btn-no').classList.toggle('on', !val);
+  document.getElementById('otg-note').style.display = val ? 'block' : 'none';
 }
 
-function updateVol(v){
-  var pct=(v-1)/4*100;
-  document.getElementById('vol').style.background='linear-gradient(to right,#dce125 '+pct+'%,#333 '+pct+'%)';
-  document.getElementById('vol-label').textContent=VOL_LABELS[v-1];
-}
-
-function switchTab(id,btn){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('on'); });
   btn.classList.add('on');
-  document.getElementById('meals').style.display=id==='meals'?'block':'none';
-  document.getElementById('shop').style.display=id==='shop'?'block':'none';
+  document.getElementById('meals').style.display = id === 'meals' ? 'block' : 'none';
+  document.getElementById('shop').style.display = id === 'shop' ? 'block' : 'none';
 }
 
-function reset(){
-  document.getElementById('out').style.display='none';
-  document.getElementById('form').style.display='block';
+function reset() {
+  document.getElementById('out').style.display = 'none';
+  document.getElementById('form').style.display = 'block';
 }
 
-function toggleDay(id){document.getElementById(id).classList.toggle('open');}
+function toggleDay(id) { document.getElementById(id).classList.toggle('open'); }
 
-function toggleRec(btn,id){
-  var el=document.getElementById(id);
+function toggleRec(btn, id) {
+  var el = document.getElementById(id);
   el.classList.toggle('open');
-  btn.textContent=el.classList.contains('open')?'HIDE RECIPE':'VIEW RECIPE';
+  btn.textContent = el.classList.contains('open') ? 'HIDE RECIPE' : 'VIEW RECIPE';
 }
 
-function buildPrompt(cal,pro,mls,numDays,diet,ing,vol,dayLabels){
-  var minPro=Math.round(parseInt(pro)/parseInt(mls));
-  var uniqueMeals=Math.ceil(parseInt(mls)*1.5)+' to '+(parseInt(mls)*2);
-  var volDesc=VOL_DESC[vol-1];
-
-  var otgSection=otgOn
-    ? 'ON-THE-GO OPTION: Mix in 1-2 meals per day that can be bought ready-made from UK high street chains such as Pret a Manger, Leon, Itsu, Starbucks, Costa, M&S Food, Tesco, Sainsburys, Boots, or Subway. Use real menu items with accurate calorie and protein counts. Examples: Pret Chicken and Greens Protein Bowl 380 kcal 30g protein, Leon Grilled Chicken Salad Box 350 kcal 35g protein, Itsu Chicken Teriyaki Rice Bowl 420 kcal 30g protein, Tesco Chicken Protein Pot 300 kcal 35g protein. For on-the-go meals set recipe field to the chain name only e.g. "Available at Pret a Manger" and exclude those items from the shopping list.'
+function buildPrompt(cal, pro, mls, diet, ing) {
+  var minPro = Math.round(parseInt(pro) / parseInt(mls));
+  var otgSection = otgOn
+    ? 'ON-THE-GO OPTION: Mix in 1-2 meals that can be bought ready-made from UK high street chains such as Pret a Manger, Leon, Itsu, Starbucks, Costa, M&S Food, Tesco, Sainsburys, Boots, or Subway. Use real menu items with accurate calorie and protein counts. Examples: Pret Chicken and Greens Protein Bowl 380 kcal 30g protein, Leon Grilled Chicken Salad Box 350 kcal 35g protein, Itsu Chicken Teriyaki Rice Bowl 420 kcal 30g protein, Tesco Chicken Protein Pot 300 kcal 35g protein. For on-the-go meals set recipe field to the chain name only e.g. "Available at Pret a Manger" and exclude those items from the shopping list.'
     : 'All meals must be home-cooked. Do not include any on-the-go or restaurant meals.';
+  var dietLine = diet ? 'Dietary restrictions: ' + diet : '';
+  var ingLine = ing ? 'Ingredients already at home (use where possible, exclude from shopping list): ' + ing : '';
 
-  var dietLine=diet?'Dietary restrictions: '+diet:'';
-  var ingLine=ing?'Ingredients already at home (use where possible, exclude from shopping list): '+ing:'';
-
-  return 'You are a nutrition coach. Generate a '+numDays+'-day meal plan for: '+dayLabels.join(', ')+'.\n'
-    +'Daily calorie target: '+cal+' kcal. Daily protein target: '+pro+'g. Meals per day: '+mls+'.\n'
-    +(dietLine?dietLine+'\n':'')
-    +(ingLine?ingLine+'\n':'')
-    +'Food volume style: '+volDesc+'\n'
-    +otgSection+'\n\n'
-    +'JCKD RECIPE LIBRARY - Prioritise these recipes when building the meal plan. You may also create your own recipes to hit targets, but use these first where possible. All macros are per portion as stated:\n\n'
-    +'BREAKFASTS:\n'
-    +'Bonanza Pancakes: 125ml oat milk, 2 eggs separated, 1 small banana, 100g rolled oats, 2 tsp baking powder, vanilla extract, avocado oil spray. Blend oat milk/yolks/banana/oats/baking powder/vanilla. Fold in stiff egg whites. Cook in batches in lightly sprayed pan. Serve with low-fat yoghurt and fruit. Portions: 2. Per portion: 350 kcal, 15g protein.\n'
-    +'Delicious Banana and Peanut Butter Pots: 300g porridge oats, 2 tsp cinnamon, 2 medium bananas chopped, 500g fortified soya yoghurt, 80g crunchy peanut butter. Simmer oats in 1.3L water, stir in bananas, cool, stir in yoghurt. Layer with peanut butter yoghurt in glasses. Portions: 6. Per portion: 356 kcal, 13g protein.\n'
-    +'Tasty Smoothie Bowl: 200g frozen mixed berries, 1 banana, 75ml oat milk, 1 tsp maple syrup, half tbsp vanilla protein powder. Toppings: kiwi, banana, berries, 25g granola, nuts and seeds, almond butter. Blend until thick. Portions: 1. Per portion: 230 kcal, 9g protein.\n'
-    +'Pepper Tomato and Ham Omelette: 2 whole eggs and 3 egg whites, 1 tsp olive oil, 1 red pepper chopped, 2 spring onions, wafer-thin extra-lean ham, 25g reduced-fat cheddar, tomatoes. Cook pepper in oil, add eggs, top with ham and cheese, grill until set. Portions: 2. Per portion: 206 kcal, 21g protein.\n'
-    +'Sweet Overnight Oats: 50g rolled oats, quarter tsp cinnamon, 100ml water or milk, 2 tbsp natural yoghurt, 50g mixed berries, drizzle honey, half tbsp nut butter. Soak overnight, top and serve. Portions: 1. Per portion: 348 kcal, 13g protein.\n'
-    +'Breakfast Bagel Club: 50g cream cheese, 2 bagels toasted, 100g smoked salmon, 1 avocado sliced, half lemon, 1 tbsp olive oil, 2 eggs, cayenne pepper. Assemble with fried eggs on top. Portions: 2. Per portion: 681 kcal, 33g protein.\n'
-    +'Vegan Breakfast Muffin: 150g muesli, 50g brown sugar, 160g plain flour, 1 tsp baking powder, 250ml soya milk, 1 apple grated, 2 tbsp grapeseed oil, almond butter, demerara sugar, 50g pecans. Bake at 200C for 25-30 mins. Portions: 12. Per portion: 224 kcal, 4g protein.\n'
-    +'One Pan Breakfast: 4 pork chipolatas, 4 rashers smoked back bacon, 140g button mushrooms, 6 eggs beaten, 8 cherry tomatoes halved, grated cheese, chives. Fry sausages and bacon, add mushrooms, pour in eggs, grill until set. Portions: 4. Per portion: 349 kcal, 25g protein.\n'
-    +'Smashed Avocado on Toast: 1 ripe avocado, half lemon, chilli flakes, 2 slices sourdough toasted, drizzle extra virgin olive oil. Optional poached egg adds 65 kcal. Portions: 1. Per portion: 500 kcal, 10g protein.\n'
-    +'Banana and Vanilla Smoothie: 1 banana, 1 tbsp porridge oats, 80g soft fruit, 150ml milk, 1 tsp honey, 1 tsp vanilla extract. Blend all together. Portions: 2. Per portion: 156 kcal, 4g protein.\n'
-    +'Overnight Chia Porridge: 50g rolled oats, 2 tbsp chia seeds, quarter tsp cinnamon, 500ml almond milk. Soak overnight, cook until creamy, top with raspberry jam swirled yoghurt, fresh raspberries, almonds, maple syrup. Portions: 2. Per portion: 437 kcal, 10g protein.\n'
-    +'Grab and Go Muesli Bars: 185g almond meal, 150g toasted muesli, 12 Medjool dates, 170g prunes, 50g currants, 55g cranberries, 80g sunflower seeds, chia seeds, 110g almonds, cacao powder, cinnamon, tahini, 80ml maple syrup. Press and chill overnight. Portions: 12. Per portion: 396 kcal, 11g protein.\n'
-    +'Berry Nice Smoothie: 450g frozen berries, 450g fat-free strawberry yoghurt, 100ml milk, 25g oats, honey optional. Blend all together. Portions: 4. Per portion: 117 kcal, 8g protein.\n'
-    +'Simple Protein Pancakes: 1 banana, 75g oats, 3 large eggs, 2 tbsp milk, 1 tbsp baking powder, pinch cinnamon, 2 tbsp protein powder, coconut oil for frying. Blend all, cook in batches. Serve with nut butter and fruit. Portions: 2. Per portion: 437 kcal, 31g protein.\n'
-    +'Mexican Breakfast Plate: 2 tbsp olive oil, onion, garlic, 400g kidney beans, cumin, chilli powder, oregano, 4 eggs, 4 tortillas, tomato, jalapenos, 30g cheddar, avocado, lime, coriander. Cook beans, fry eggs, assemble on tortillas. Portions: 4. Per portion: 540 kcal, 21g protein.\n'
-    +'Protein Power Balls: 150g porridge oats, 50g protein powder, 1 tbsp flaxseeds, cinnamon, vanilla, 2 tbsp maple syrup, 150g peanut butter, 4 tbsp plant milk, 25g chocolate chips. Mix and roll into 15 balls, chill 30 mins. Portions: 15. Per portion: 396 kcal, 11g protein.\n\n'
-    +'LUNCHES:\n'
-    +'The Spiced Chicken Wrap: 180g raw chicken breast sliced, half tsp chilli powder, garlic, 1 tsp olive oil, 2 seeded wraps, lime juice, half avocado, roasted red pepper, coriander. Fry spiced chicken, assemble in wraps with avocado. Portions: 2. Per portion: 403 kcal, 29g protein.\n'
-    +'The Mega Nutrition Soup: 1 tbsp rapeseed oil, 1 onion, 1 garlic clove, 400g broccoli, 300g frozen peas, 200g chard, 1 litre veg stock, basil, dill, lemon, 2 tbsp pumpkin seeds. Simmer 25 mins, blend smooth. Portions: 4. Per portion: 214 kcal, 12g protein.\n'
-    +'The Tuna Pasta Lunch Box: 250g wholemeal penne, 240g bio yoghurt, 2 tsp English mustard powder, 2 tbsp extra virgin olive oil, 4 tsp apple cider vinegar, red onion, basil, 320g tuna in spring water, 2 red peppers, 340g sweetcorn. Mix dressing with tuna and veg, toss with cold pasta. Portions: 4. Per portion: 444 kcal, 25g protein.\n'
-    +'Vegan Curry and Chickpea Jacket: 4 sweet potatoes, 1 tbsp coconut oil, cumin seeds, 1 large onion, 2 garlic cloves, ginger, green chilli, garam masala, ground coriander, turmeric, 2 tbsp tikka masala paste, 2 x 400g chopped tomatoes, 2 x 400g chickpeas. Roast potatoes, make curry, spoon over. Portions: 4. Per portion: 276 kcal, 12g protein.\n'
-    +'Caesar Pitta: lemon juice, garlic, 1 tbsp fat-free Greek yoghurt, 1 tbsp lighter mayo, mustard powder, anchovy, parmesan, 80g cooked chicken shredded, cucumber, cherry tomatoes, Little Gem lettuce, 1 wholemeal pitta. Whisk dressing, toss with chicken and salad, stuff in pitta. Portions: 1. Per portion: 461 kcal, 40g protein.\n'
-    +'Spiced Carrot and Lentil Soup: 2 tsp cumin seeds, chilli flakes, 2 tbsp olive oil, 600g carrots grated, 140g split red lentils, 1 litre veg stock, 125ml milk. Toast spices, add veg and lentils, simmer 15 mins, blend. Portions: 4. Per portion: 238 kcal, 11g protein.\n'
-    +'The Lean Salmon Pasta Bowl: 350g penne, 2 salmon steaks 175g each, 1 tbsp olive oil, 2 tbsp pine nuts, 1 red pepper, 300g mushrooms, basil. Cook salmon in pasta water, saute veg, combine. Portions: 4. Per portion: 543 kcal, 31g protein.\n'
-    +'Nutty Chicken Satay Strips: 2 tbsp chunky peanut butter, garlic, 1 tsp Madras curry powder, soy sauce, lime juice, 300g raw chicken breast strips. Coat chicken in peanut mixture, bake 8-10 mins at 200C. Serve with cucumber and sweet chilli sauce. Portions: 2. Per portion: 276 kcal, 41g protein.\n'
-    +'Winter Veg Soup: 85g red lentils, 2 carrots, 3 sticks celery, 2 leeks, 2 tbsp tomato puree, fresh thyme, 3 garlic cloves, veg bouillon, ground coriander. Simmer all in 1.5 litres boiling water for 30 mins, blend if desired. Portions: 2. Per portion: 264 kcal, 16g protein.\n'
-    +'Turkey Chilli Jacket Potatoes: 4 large baking potatoes, 1 tbsp olive oil, 1 onion, garlic, 300g turkey mince, smoked paprika, cider vinegar, brown sugar, 350ml passata. Bake potatoes, cook turkey chilli, serve on top. Portions: 4. Per portion: 410 kcal, 30g protein.\n'
-    +'Tortilla Pizza: 4 tbsp passata, garlic, half tbsp olive oil, dried herbs, 2 plain tortillas, 50g mozzarella, pepperoni, jalapenos. Spread sauce on tortillas, top and bake 6-8 mins at 220C. Portions: 2. Per portion: 266 kcal, 11g protein.\n'
-    +'Mediterranean Toastie: 2 slices bread, 2 tbsp tomato pasta sauce, 50g torn mozzarella, basil leaves, shredded chicken, butter. Assemble, butter outside, grill in pan until golden. Portions: 1. Per portion: 535 kcal, 26g protein.\n'
-    +'Pesto Pasta Salad: 400g mini pasta shapes, 200ml creme fraiche, 4 tbsp fresh pesto, half cucumber, 16 cherry tomatoes, 200g frozen peas cooked, basil. Cook pasta, mix with creme fraiche and pesto, cool, add veg. Portions: 6. Per portion: 420 kcal, 11g protein.\n'
-    +'The Mighty Open Sandwich: 2 eggs, 1 ripe avocado, lime juice, 2 slices rye bread, 2 tsp sriracha, cress. Hard boil eggs, mash avocado on rye, top with sliced eggs, sriracha and cress. Portions: 1. Per portion: 476 kcal, 19g protein.\n'
-    +'Spanish Soup: 400g chopped tomatoes, 110g chorizo chunks, 140g Savoy cabbage shredded, chilli flakes, 400g chickpeas, stock cube. Simmer all together 6 mins. Portions: 2. Per portion: 366 kcal, 23g protein.\n'
-    +'Microwave Veg Curry: 1 tbsp coconut oil, half onion, ginger paste, garlic paste, tomato puree, turmeric, garam masala, cumin, ground coriander, 400g chopped tomatoes, 50g spinach, 400g chickpeas, 100ml coconut milk, coriander, lime juice. Microwave in stages 6-8 mins total. Portions: 2. Per portion: 374 kcal, 14g protein.\n\n'
-    +'DINNERS:\n'
-    +'Easy Vegan Singapore Noodles: 200g vermicelli rice noodles, mild curry powder, turmeric, sesame oil, soy sauce, 1 tbsp sunflower oil, 1 onion, 1 pepper, 200g beansprouts. Soak noodles, stir fry veg, add noodles with sauce. Portions: 4. Per portion: 288 kcal, 7g protein.\n'
-    +'Extra Tasty Salmon Burgers: 550g salmon fillets, 2 tbsp Thai red curry paste, ginger, soy sauce, coriander, 1 tsp vegetable oil, 2 carrots, cucumber, white wine vinegar, sugar. Blend salmon mixture, shape into 4 burgers, fry 4-5 mins each side. Serve with carrot and cucumber slaw. Portions: 4. Per portion: 292 kcal, 29g protein.\n'
-    +'The Mediterranean Evening: 1 onion sliced, 1 red and 1 green pepper, 50g chorizo, 2 garlic cloves, 1 tbsp olive oil, 250g basmati rice, 400g chopped tomatoes, 200g raw peeled prawns. Fry chorizo and veg, add rice and tomatoes with 500ml water, cook 12 mins, add prawns for final minute. Portions: 4. Per portion: 356 kcal, 19g protein.\n'
-    +'The One Pot Roast Dinner: 1.5kg chicken, lemon, 50g softened butter, dried mixed herbs, 750g potatoes, 500g carrots, 2 tbsp olive oil, 100g frozen peas, 300ml chicken stock, 1 tsp Marmite. Roast at 200C for 80 mins total, add peas and stock for final 10 mins. Portions: 4. Per portion: 845 kcal, 55g protein.\n'
-    +'Turkey Burger and Chips: 190g sweet potato wedges, 260g turkey breast mince 5% fat, red onion, garlic, egg, 70g apple grated, oregano, paprika, 15g coconut oil, 135g green veg. Shape mince into burgers, bake 20-25 mins at 180C. Fry sweet potato wedges in coconut oil. Portions: 2. Per portion: 428 kcal, 40g protein.\n'
-    +'The Simple Seafood Rice: 1 tbsp olive oil, 1 leek, 110g chorizo, 1 tsp turmeric, 300g long grain rice, 1L fish stock, 200g frozen peas, 400g frozen seafood mix. Fry leek and chorizo, add rice and stock, simmer 15 mins, add peas and seafood. Portions: 4. Per portion: 518 kcal, 32g protein.\n'
-    +'Veggie Enchiladas: 1 tsp olive oil, 2 onions, 280g carrots grated, chilli powder, 2 x 400g chopped tomatoes, 2 x 400g cans pulses drained, 6 small wholemeal tortillas, 200g low-fat natural yoghurt, 50g extra-mature cheddar. Make bean chilli, fill tortillas, top with yoghurt and cheese, grill until golden. Portions: 4. Per portion: 430 kcal, 23g protein.\n'
-    +'Healthy Choc Brownies: 2 x 400g black beans drained, 60g cocoa powder, coffee granules, 200g xylitol, vanilla, 3 eggs, 200g fat-free Greek yoghurt, baking powder. Blend all, bake at 190C for 25-30 mins. Portions: 16. Per portion: 121 kcal, 6g protein.\n'
-    +'Cheeky Chinese Chicken Curry: 4 chicken breasts, cornflour, 1 onion, 2 tbsp rapeseed oil, garlic, curry powder, turmeric, ground ginger, 400ml chicken stock, soy sauce, frozen peas, rice. Fry seasoned chicken, blend onion sauce, combine and simmer. Portions: 4. Per portion: 264 kcal, 40g protein.\n'
-    +'Caponata Pasta: 4 tbsp olive oil, 1 large onion, 4 garlic cloves, 250g chargrilled Mediterranean veg, 400g chopped tomatoes, 1 tbsp capers, 2 tbsp raisins, 350g rigatoni, basil, parmesan. Caramelise onion, add veg and sauce, toss with cooked pasta. Portions: 2. Per portion: 542 kcal, 14g protein.\n'
-    +'Chicken Roasted With Root Veg: celeriac, 400g swede, 2 large sweet potatoes, 2 parsnips, garlic, 2 tbsp olive oil, cumin, 4 chicken breasts 140g each wrapped in prosciutto and sage. Roast veg 30 mins at 200C, add prosciutto-wrapped chicken, roast further 30-35 mins. Portions: 4. Per portion: 420 kcal, 43g protein.\n'
-    +'Easy Prawn Stir Fry: 500g mixed vegetables, 1 tbsp rapeseed oil, garlic, ginger, 1.5 tbsp soy sauce, sweet chilli sauce, 200g cooked prawns, 200g egg noodles cooked. Stir fry veg with garlic and ginger, add sauce and prawns, serve over noodles. Portions: 4. Per portion: 193 kcal, 14g protein.\n'
-    +'Peppered Steak With Noodles: 450g skirt steak, soy sauce, shaohsing wine, garlic, ginger, cornflour, sesame oil, onion, red and yellow pepper, sesame seeds, crushed black peppercorns, 500g cooked noodles. Sear steak, stir fry veg with sauce, combine. Portions: 4. Per portion: 479 kcal, 36g protein.\n'
-    +'Fish Tacos: 500g white fish fillets, cumin, coriander, smoked paprika, 2 limes, red cabbage, 2 tomatoes, 2 avocados, 8 small tortilla wraps, coriander, green chilli, 100g soured cream, chilli sauce. Grill spiced fish, assemble tacos with slaw and avocado. Portions: 4. Per portion: 665 kcal, 33g protein.\n'
-    +'Chicken Tagine: 8 boneless chicken thighs, 2 tbsp olive oil, 1 onion, 2 tsp fresh ginger, saffron or turmeric, 1 tbsp honey, 400g carrots cut into sticks, parsley, lemon wedges. Simmer covered for 30 mins in 150ml water with spices and carrots. Portions: 4. Per portion: 304 kcal, 39g protein.\n\n'
-    +'IMPORTANT: When using a recipe from the JCKD library, you may scale ingredients up or down to hit the user targets. Use the original recipe name. CRITICAL: whenever you scale a recipe, you MUST recalculate the calories and protein from scratch using the actual ingredient quantities - never copy the macro numbers from the original recipe card. Calculate each ingredient separately using the reference table, sum them up, then divide by number of portions. Where the library recipe does not fit the targets or volume preference, create your own recipe following the same rules.\n\n'
-    +'RECIPE STYLE GUIDE: When creating your own recipes (outside the JCKD library), follow this style: simple, whole food ingredients that look and sound appealing. Think high-protein meals that feel fresh and modern rather than diet food - e.g. cottage cheese bowls, Greek yoghurt-based sauces, lean mince dishes with vibrant veg, rice bowls with bold flavours, egg-based meals with greens. Avoid beige, bland or overly processed meals. Meals should feel like something you would genuinely want to eat and photograph. Prioritise ingredients like eggs, Greek yoghurt, chicken, turkey mince, lean beef, smoked salmon, oats, sweet potato, rice, avocado, leafy greens, herbs and spices. Keep recipes simple - no more than 8 ingredients and straightforward to cook.\n\n'
-    +'INGREDIENT REFERENCE TABLE - use these exact values per 100g/100ml unless stated:\n'
-    +'Chicken breast (raw): 110 kcal, 23g protein per 100g\n'
-    +'Turkey mince 5% fat (raw): 120 kcal, 22g protein per 100g\n'
-    +'Beef mince 5% fat (raw): 130 kcal, 21g protein per 100g\n'
-    +'Salmon fillet (raw): 180 kcal, 20g protein per 100g\n'
-    +'Cod fillet (raw): 80 kcal, 18g protein per 100g\n'
-    +'Whole eggs: 155 kcal, 13g protein per 100g (1 large egg = 60g = 93 kcal, 8g protein)\n'
-    +'Egg whites only: 52 kcal, 11g protein per 100g\n'
-    +'Fage 0% Greek yoghurt: 54 kcal, 10g protein per 100g\n'
-    +'Skimmed milk: 35 kcal, 3.5g protein per 100ml\n'
-    +'Reduced fat cheddar: 270 kcal, 28g protein per 100g\n'
-    +'Cottage cheese (low fat): 80 kcal, 12g protein per 100g\n'
-    +'Whey protein powder: 370 kcal, 75g protein per 100g (1 scoop = 30g = 111 kcal, 22.5g protein)\n'
-    +'Porridge oats (dry): 370 kcal, 13g protein per 100g\n'
-    +'White rice (dry): 360 kcal, 7g protein per 100g\n'
-    +'Brown rice (dry): 350 kcal, 8g protein per 100g\n'
-    +'Basmati rice (dry): 355 kcal, 8g protein per 100g\n'
-    +'White pasta (dry): 350 kcal, 12g protein per 100g\n'
-    +'Sweet potato (raw): 90 kcal, 2g protein per 100g\n'
-    +'White potato (raw): 80 kcal, 2g protein per 100g\n'
-    +'Sourdough bread: 270 kcal, 9g protein per 100g (1 slice = 40g = 108 kcal)\n'
-    +'Blueberries: 60 kcal, 0.7g protein per 100g\n'
-    +'Frozen mixed berries: 45 kcal, 0.8g protein per 100g\n'
-    +'Banana: 95 kcal, 1.2g protein per 100g\n'
-    +'Apple: 55 kcal, 0.3g protein per 100g\n'
-    +'Olive oil: 900 kcal, 0g protein per 100ml (1 tsp = 5ml = 45 kcal)\n'
-    +'Cooking spray (1 spray): 5 kcal, 0g protein\n'
-    +'Peanut butter: 600 kcal, 25g protein per 100g\n'
-    +'Honey: 300 kcal, 0g protein per 100g (1 tsp = 7g = 21 kcal)\n'
-    +'Tinned chopped tomatoes: 32 kcal, 1.5g protein per 100g\n'
-    +'Passata: 35 kcal, 1.5g protein per 100g\n'
-    +'Spinach (raw): 23 kcal, 2.9g protein per 100g\n'
-    +'Broccoli (raw): 34 kcal, 2.8g protein per 100g\n'
-    +'Bell pepper (raw): 30 kcal, 1g protein per 100g (1 whole = 160g = 48 kcal)\n'
-    +'Onion (raw): 40 kcal, 1g protein per 100g\n'
-    +'Tinned tuna in brine (drained): 100 kcal, 24g protein per 100g\n'
-    +'Tinned chickpeas (drained): 140 kcal, 8g protein per 100g\n\n'
-    +'Rule 1 - CALORIE ACCURACY: Use the reference table above for all listed ingredients. For any ingredient not in the table, overestimate by 10-15%. Always account for all ingredients including oils, sauces and toppings.\n'
-    +'Rule 2 - RAW WEIGHTS: All meat, fish, poultry and protein sources must be listed as raw uncooked weight.\n'
-    +'Rule 3 - OIL AND BUTTER: Use absolute minimum - max 1 tsp (5ml) oil or 5g butter per meal. Use cooking spray where possible.\n'
-    +'Rule 4 - SPECIFIC INGREDIENTS: Always specify exact type. Use "0% fat Greek yoghurt" not "Greek yoghurt", "extra lean beef mince (5% fat)" not "beef mince", "skimmed milk" not "milk".\n'
-    +'Rule 5 - HIGH PROTEIN: Each meal must contain at least '+minPro+'g protein.\n'
-    +'Rule 6 - QUANTITIES: All ingredient quantities must be in grams or millilitres. Exception: very low-calorie veg like spinach or herbs can use "handful".\n'
-    +'Rule 7 - SIMPLICITY: Repeat meals across days. Use only '+uniqueMeals+' unique meals total across all days.\n'
-    +'Rule 8 - RECIPE FORMAT: Write recipes as numbered steps. E.g. "1. Season 150g raw chicken breast. 2. Heat 1 spray of cooking spray in a pan. 3. Cook chicken for 6 mins each side."\n'
-    +'Rule 9 - DAY LABELS must be exactly: '+dayLabels.map(function(d){return '"'+d+'"';}).join(', ')+'.\n\n'
-    +'Respond ONLY with valid raw JSON, no markdown, no extra text:\n'
-    +'{"weeklyAvgCalories":number,"weeklyAvgProtein":number,"days":[{"day":"Day 1","totalCalories":number,"totalProtein":number,"meals":[{"name":"string","calories":number,"protein":number,"recipe":"1. step. 2. step."}]}],"shoppingList":["ingredient - Xg/ml"]}';
+  return 'You are a nutrition coach. Generate a 1-day meal plan.\n'
+    + 'Daily calorie target: ' + cal + ' kcal. Daily protein target: ' + pro + 'g. Meals per day: ' + mls + '.\n'
+    + (dietLine ? dietLine + '\n' : '')
+    + (ingLine ? ingLine + '\n' : '')
+    + 'Food style: a balanced mix of calorie-dense and volume foods. Use lean proteins, complex carbs, moderate healthy fats, and a good portion of vegetables in each meal. Meals should be satisfying and filling without being excessive.\n'
+    + otgSection + '\n\n'
+    + 'JCKD RECIPE LIBRARY - Prioritise these recipes when building the meal plan. You may also create your own recipes to hit targets, but use these first where possible. All macros are per portion as stated:\n\n'
+    + 'BREAKFASTS:\n'
+    + 'Bonanza Pancakes: 125ml oat milk, 2 eggs separated, 1 small banana, 100g rolled oats, 2 tsp baking powder, vanilla extract, avocado oil spray. Blend oat milk/yolks/banana/oats/baking powder/vanilla. Fold in stiff egg whites. Cook in batches in lightly sprayed pan. Serve with low-fat yoghurt and fruit. Portions: 2. Per portion: 350 kcal, 15g protein.\n'
+    + 'Delicious Banana and Peanut Butter Pots: 300g porridge oats, 2 tsp cinnamon, 2 medium bananas chopped, 500g fortified soya yoghurt, 80g crunchy peanut butter. Simmer oats in 1.3L water, stir in bananas, cool, stir in yoghurt. Layer with peanut butter yoghurt in glasses. Portions: 6. Per portion: 356 kcal, 13g protein.\n'
+    + 'Tasty Smoothie Bowl: 200g frozen mixed berries, 1 banana, 75ml oat milk, 1 tsp maple syrup, half tbsp vanilla protein powder. Toppings: kiwi, banana, berries, 25g granola, nuts and seeds, almond butter. Blend until thick. Portions: 1. Per portion: 230 kcal, 9g protein.\n'
+    + 'Pepper Tomato and Ham Omelette: 2 whole eggs and 3 egg whites, 1 tsp olive oil, 1 red pepper chopped, 2 spring onions, wafer-thin extra-lean ham, 25g reduced-fat cheddar, tomatoes. Cook pepper in oil, add eggs, top with ham and cheese, grill until set. Portions: 2. Per portion: 206 kcal, 21g protein.\n'
+    + 'Sweet Overnight Oats: 50g rolled oats, quarter tsp cinnamon, 100ml water or milk, 2 tbsp natural yoghurt, 50g mixed berries, drizzle honey, half tbsp nut butter. Soak overnight, top and serve. Portions: 1. Per portion: 348 kcal, 13g protein.\n'
+    + 'Breakfast Bagel Club: 50g cream cheese, 2 bagels toasted, 100g smoked salmon, 1 avocado sliced, half lemon, 1 tbsp olive oil, 2 eggs, cayenne pepper. Assemble with fried eggs on top. Portions: 2. Per portion: 681 kcal, 33g protein.\n'
+    + 'Vegan Breakfast Muffin: 150g muesli, 50g brown sugar, 160g plain flour, 1 tsp baking powder, 250ml soya milk, 1 apple grated, 2 tbsp grapeseed oil, almond butter, demerara sugar, 50g pecans. Bake at 200C for 25-30 mins. Portions: 12. Per portion: 224 kcal, 4g protein.\n'
+    + 'One Pan Breakfast: 4 pork chipolatas, 4 rashers smoked back bacon, 140g button mushrooms, 6 eggs beaten, 8 cherry tomatoes halved, grated cheese, chives. Fry sausages and bacon, add mushrooms, pour in eggs, grill until set. Portions: 4. Per portion: 349 kcal, 25g protein.\n'
+    + 'Smashed Avocado on Toast: 1 ripe avocado, half lemon, chilli flakes, 2 slices sourdough toasted, drizzle extra virgin olive oil. Optional poached egg adds 65 kcal. Portions: 1. Per portion: 500 kcal, 10g protein.\n'
+    + 'Banana and Vanilla Smoothie: 1 banana, 1 tbsp porridge oats, 80g soft fruit, 150ml milk, 1 tsp honey, 1 tsp vanilla extract. Blend all together. Portions: 2. Per portion: 156 kcal, 4g protein.\n'
+    + 'Overnight Chia Porridge: 50g rolled oats, 2 tbsp chia seeds, quarter tsp cinnamon, 500ml almond milk. Soak overnight, cook until creamy, top with raspberry jam swirled yoghurt, fresh raspberries, almonds, maple syrup. Portions: 2. Per portion: 437 kcal, 10g protein.\n'
+    + 'Berry Nice Smoothie: 450g frozen berries, 450g fat-free strawberry yoghurt, 100ml milk, 25g oats, honey optional. Blend all together. Portions: 4. Per portion: 117 kcal, 8g protein.\n'
+    + 'Simple Protein Pancakes: 1 banana, 75g oats, 3 large eggs, 2 tbsp milk, 1 tbsp baking powder, pinch cinnamon, 2 tbsp protein powder, coconut oil for frying. Blend all, cook in batches. Serve with nut butter and fruit. Portions: 2. Per portion: 437 kcal, 31g protein.\n'
+    + 'Mexican Breakfast Plate: 2 tbsp olive oil, onion, garlic, 400g kidney beans, cumin, chilli powder, oregano, 4 eggs, 4 tortillas, tomato, jalapenos, 30g cheddar, avocado, lime, coriander. Cook beans, fry eggs, assemble on tortillas. Portions: 4. Per portion: 540 kcal, 21g protein.\n'
+    + 'Protein Power Balls: 150g porridge oats, 50g protein powder, 1 tbsp flaxseeds, cinnamon, vanilla, 2 tbsp maple syrup, 150g peanut butter, 4 tbsp plant milk, 25g chocolate chips. Mix and roll into 15 balls, chill 30 mins. Portions: 15. Per portion: 396 kcal, 11g protein.\n\n'
+    + 'LUNCHES:\n'
+    + 'The Spiced Chicken Wrap: 180g raw chicken breast sliced, half tsp chilli powder, garlic, 1 tsp olive oil, 2 seeded wraps, lime juice, half avocado, roasted red pepper, coriander. Fry spiced chicken, assemble in wraps with avocado. Portions: 2. Per portion: 403 kcal, 29g protein.\n'
+    + 'The Mega Nutrition Soup: 1 tbsp rapeseed oil, 1 onion, 1 garlic clove, 400g broccoli, 300g frozen peas, 200g chard, 1 litre veg stock, basil, dill, lemon, 2 tbsp pumpkin seeds. Simmer 25 mins, blend smooth. Portions: 4. Per portion: 214 kcal, 12g protein.\n'
+    + 'The Tuna Pasta Lunch Box: 250g wholemeal penne, 240g bio yoghurt, 2 tsp English mustard powder, 2 tbsp extra virgin olive oil, 4 tsp apple cider vinegar, red onion, basil, 320g tuna in spring water, 2 red peppers, 340g sweetcorn. Mix dressing with tuna and veg, toss with cold pasta. Portions: 4. Per portion: 444 kcal, 25g protein.\n'
+    + 'Vegan Curry and Chickpea Jacket: 4 sweet potatoes, 1 tbsp coconut oil, cumin seeds, 1 large onion, 2 garlic cloves, ginger, green chilli, garam masala, ground coriander, turmeric, 2 tbsp tikka masala paste, 2 x 400g chopped tomatoes, 2 x 400g chickpeas. Roast potatoes, make curry, spoon over. Portions: 4. Per portion: 276 kcal, 12g protein.\n'
+    + 'Caesar Pitta: lemon juice, garlic, 1 tbsp fat-free Greek yoghurt, 1 tbsp lighter mayo, mustard powder, anchovy, parmesan, 80g cooked chicken shredded, cucumber, cherry tomatoes, Little Gem lettuce, 1 wholemeal pitta. Whisk dressing, toss with chicken and salad, stuff in pitta. Portions: 1. Per portion: 461 kcal, 40g protein.\n'
+    + 'Spiced Carrot and Lentil Soup: 2 tsp cumin seeds, chilli flakes, 2 tbsp olive oil, 600g carrots grated, 140g split red lentils, 1 litre veg stock, 125ml milk. Toast spices, add veg and lentils, simmer 15 mins, blend. Portions: 4. Per portion: 238 kcal, 11g protein.\n'
+    + 'The Lean Salmon Pasta Bowl: 350g penne, 2 salmon steaks 175g each, 1 tbsp olive oil, 2 tbsp pine nuts, 1 red pepper, 300g mushrooms, basil. Cook salmon in pasta water, saute veg, combine. Portions: 4. Per portion: 543 kcal, 31g protein.\n'
+    + 'Nutty Chicken Satay Strips: 2 tbsp chunky peanut butter, garlic, 1 tsp Madras curry powder, soy sauce, lime juice, 300g raw chicken breast strips. Coat chicken in peanut mixture, bake 8-10 mins at 200C. Serve with cucumber and sweet chilli sauce. Portions: 2. Per portion: 276 kcal, 41g protein.\n'
+    + 'Winter Veg Soup: 85g red lentils, 2 carrots, 3 sticks celery, 2 leeks, 2 tbsp tomato puree, fresh thyme, 3 garlic cloves, veg bouillon, ground coriander. Simmer all in 1.5 litres boiling water for 30 mins, blend if desired. Portions: 2. Per portion: 264 kcal, 16g protein.\n'
+    + 'Turkey Chilli Jacket Potatoes: 4 large baking potatoes, 1 tbsp olive oil, 1 onion, garlic, 300g turkey mince, smoked paprika, cider vinegar, brown sugar, 350ml passata. Bake potatoes, cook turkey chilli, serve on top. Portions: 4. Per portion: 410 kcal, 30g protein.\n'
+    + 'Tortilla Pizza: 4 tbsp passata, garlic, half tbsp olive oil, dried herbs, 2 plain tortillas, 50g mozzarella, pepperoni, jalapenos. Spread sauce on tortillas, top and bake 6-8 mins at 220C. Portions: 2. Per portion: 266 kcal, 11g protein.\n'
+    + 'Pesto Pasta Salad: 400g mini pasta shapes, 200ml creme fraiche, 4 tbsp fresh pesto, half cucumber, 16 cherry tomatoes, 200g frozen peas cooked, basil. Cook pasta, mix with creme fraiche and pesto, cool, add veg. Portions: 6. Per portion: 420 kcal, 11g protein.\n'
+    + 'The Mighty Open Sandwich: 2 eggs, 1 ripe avocado, lime juice, 2 slices rye bread, 2 tsp sriracha, cress. Hard boil eggs, mash avocado on rye, top with sliced eggs, sriracha and cress. Portions: 1. Per portion: 476 kcal, 19g protein.\n'
+    + 'Spanish Soup: 400g chopped tomatoes, 110g chorizo chunks, 140g Savoy cabbage shredded, chilli flakes, 400g chickpeas, stock cube. Simmer all together 6 mins. Portions: 2. Per portion: 366 kcal, 23g protein.\n'
+    + 'Microwave Veg Curry: 1 tbsp coconut oil, half onion, ginger paste, garlic paste, tomato puree, turmeric, garam masala, cumin, ground coriander, 400g chopped tomatoes, 50g spinach, 400g chickpeas, 100ml coconut milk, coriander, lime juice. Microwave in stages 6-8 mins total. Portions: 2. Per portion: 374 kcal, 14g protein.\n\n'
+    + 'DINNERS:\n'
+    + 'Easy Vegan Singapore Noodles: 200g vermicelli rice noodles, mild curry powder, turmeric, sesame oil, soy sauce, 1 tbsp sunflower oil, 1 onion, 1 pepper, 200g beansprouts. Soak noodles, stir fry veg, add noodles with sauce. Portions: 4. Per portion: 288 kcal, 7g protein.\n'
+    + 'Extra Tasty Salmon Burgers: 550g salmon fillets, 2 tbsp Thai red curry paste, ginger, soy sauce, coriander, 1 tsp vegetable oil, 2 carrots, cucumber, white wine vinegar, sugar. Blend salmon mixture, shape into 4 burgers, fry 4-5 mins each side. Serve with carrot and cucumber slaw. Portions: 4. Per portion: 292 kcal, 29g protein.\n'
+    + 'The Mediterranean Evening: 1 onion sliced, 1 red and 1 green pepper, 50g chorizo, 2 garlic cloves, 1 tbsp olive oil, 250g basmati rice, 400g chopped tomatoes, 200g raw peeled prawns. Fry chorizo and veg, add rice and tomatoes with 500ml water, cook 12 mins, add prawns for final minute. Portions: 4. Per portion: 356 kcal, 19g protein.\n'
+    + 'The One Pot Roast Dinner: 1.5kg chicken, lemon, 50g softened butter, dried mixed herbs, 750g potatoes, 500g carrots, 2 tbsp olive oil, 100g frozen peas, 300ml chicken stock, 1 tsp Marmite. Roast at 200C for 80 mins total, add peas and stock for final 10 mins. Portions: 4. Per portion: 845 kcal, 55g protein.\n'
+    + 'Turkey Burger and Chips: 190g sweet potato wedges, 260g turkey breast mince 5% fat, red onion, garlic, egg, 70g apple grated, oregano, paprika, 15g coconut oil, 135g green veg. Shape mince into burgers, bake 20-25 mins at 180C. Fry sweet potato wedges in coconut oil. Portions: 2. Per portion: 428 kcal, 40g protein.\n'
+    + 'The Simple Seafood Rice: 1 tbsp olive oil, 1 leek, 110g chorizo, 1 tsp turmeric, 300g long grain rice, 1L fish stock, 200g frozen peas, 400g frozen seafood mix. Fry leek and chorizo, add rice and stock, simmer 15 mins, add peas and seafood. Portions: 4. Per portion: 518 kcal, 32g protein.\n'
+    + 'Veggie Enchiladas: 1 tsp olive oil, 2 onions, 280g carrots grated, chilli powder, 2 x 400g chopped tomatoes, 2 x 400g cans pulses drained, 6 small wholemeal tortillas, 200g low-fat natural yoghurt, 50g extra-mature cheddar. Make bean chilli, fill tortillas, top with yoghurt and cheese, grill until golden. Portions: 4. Per portion: 430 kcal, 23g protein.\n'
+    + 'Healthy Choc Brownies: 2 x 400g black beans drained, 60g cocoa powder, coffee granules, 200g xylitol, vanilla, 3 eggs, 200g fat-free Greek yoghurt, baking powder. Blend all, bake at 190C for 25-30 mins. Portions: 16. Per portion: 121 kcal, 6g protein.\n'
+    + 'Cheeky Chinese Chicken Curry: 4 chicken breasts, cornflour, 1 onion, 2 tbsp rapeseed oil, garlic, curry powder, turmeric, ground ginger, 400ml chicken stock, soy sauce, frozen peas, rice. Fry seasoned chicken, blend onion sauce, combine and simmer. Portions: 4. Per portion: 264 kcal, 40g protein.\n'
+    + 'Caponata Pasta: 4 tbsp olive oil, 1 large onion, 4 garlic cloves, 250g chargrilled Mediterranean veg, 400g chopped tomatoes, 1 tbsp capers, 2 tbsp raisins, 350g rigatoni, basil, parmesan. Caramelise onion, add veg and sauce, toss with cooked pasta. Portions: 2. Per portion: 542 kcal, 14g protein.\n'
+    + 'Chicken Roasted With Root Veg: celeriac, 400g swede, 2 large sweet potatoes, 2 parsnips, garlic, 2 tbsp olive oil, cumin, 4 chicken breasts 140g each wrapped in prosciutto and sage. Roast veg 30 mins at 200C, add prosciutto-wrapped chicken, roast further 30-35 mins. Portions: 4. Per portion: 420 kcal, 43g protein.\n'
+    + 'Easy Prawn Stir Fry: 500g mixed vegetables, 1 tbsp rapeseed oil, garlic, ginger, 1.5 tbsp soy sauce, sweet chilli sauce, 200g cooked prawns, 200g egg noodles cooked. Stir fry veg with garlic and ginger, add sauce and prawns, serve over noodles. Portions: 4. Per portion: 193 kcal, 14g protein.\n'
+    + 'Peppered Steak With Noodles: 450g skirt steak, soy sauce, shaohsing wine, garlic, ginger, cornflour, sesame oil, onion, red and yellow pepper, sesame seeds, crushed black peppercorns, 500g cooked noodles. Sear steak, stir fry veg with sauce, combine. Portions: 4. Per portion: 479 kcal, 36g protein.\n'
+    + 'Fish Tacos: 500g white fish fillets, cumin, coriander, smoked paprika, 2 limes, red cabbage, 2 tomatoes, 2 avocados, 8 small tortilla wraps, coriander, green chilli, 100g soured cream, chilli sauce. Grill spiced fish, assemble tacos with slaw and avocado. Portions: 4. Per portion: 665 kcal, 33g protein.\n'
+    + 'Chicken Tagine: 8 boneless chicken thighs, 2 tbsp olive oil, 1 onion, 2 tsp fresh ginger, saffron or turmeric, 1 tbsp honey, 400g carrots cut into sticks, parsley, lemon wedges. Simmer covered for 30 mins in 150ml water with spices and carrots. Portions: 4. Per portion: 304 kcal, 39g protein.\n\n'
+    + 'RECIPE STYLE GUIDE: When creating your own recipes (outside the JCKD library), follow this style: simple, whole food ingredients that look and sound appealing. Think high-protein meals that feel fresh and modern rather than diet food. Prioritise ingredients like eggs, Greek yoghurt, chicken, turkey mince, lean beef, smoked salmon, oats, sweet potato, rice, avocado, leafy greens, herbs and spices. Keep recipes simple - no more than 8 ingredients and straightforward to cook.\n\n'
+    + 'INGREDIENT REFERENCE TABLE - use these exact values per 100g/100ml unless stated:\n'
+    + 'Chicken breast (raw): 110 kcal, 23g protein per 100g\n'
+    + 'Turkey mince 5% fat (raw): 120 kcal, 22g protein per 100g\n'
+    + 'Beef mince 5% fat (raw): 130 kcal, 21g protein per 100g\n'
+    + 'Salmon fillet (raw): 180 kcal, 20g protein per 100g\n'
+    + 'Cod fillet (raw): 80 kcal, 18g protein per 100g\n'
+    + 'Whole eggs: 155 kcal, 13g protein per 100g (1 large egg = 60g = 93 kcal, 8g protein)\n'
+    + 'Egg whites only: 52 kcal, 11g protein per 100g\n'
+    + 'Fage 0% Greek yoghurt: 54 kcal, 10g protein per 100g\n'
+    + 'Skimmed milk: 35 kcal, 3.5g protein per 100ml\n'
+    + 'Reduced fat cheddar: 270 kcal, 28g protein per 100g\n'
+    + 'Cottage cheese (low fat): 80 kcal, 12g protein per 100g\n'
+    + 'Whey protein powder: 370 kcal, 75g protein per 100g (1 scoop = 30g = 111 kcal, 22.5g protein)\n'
+    + 'Porridge oats (dry): 370 kcal, 13g protein per 100g\n'
+    + 'White rice (dry): 360 kcal, 7g protein per 100g\n'
+    + 'Brown rice (dry): 350 kcal, 8g protein per 100g\n'
+    + 'Basmati rice (dry): 355 kcal, 8g protein per 100g\n'
+    + 'White pasta (dry): 350 kcal, 12g protein per 100g\n'
+    + 'Sweet potato (raw): 90 kcal, 2g protein per 100g\n'
+    + 'White potato (raw): 80 kcal, 2g protein per 100g\n'
+    + 'Sourdough bread: 270 kcal, 9g protein per 100g (1 slice = 40g = 108 kcal)\n'
+    + 'Blueberries: 60 kcal, 0.7g protein per 100g\n'
+    + 'Frozen mixed berries: 45 kcal, 0.8g protein per 100g\n'
+    + 'Banana: 95 kcal, 1.2g protein per 100g\n'
+    + 'Apple: 55 kcal, 0.3g protein per 100g\n'
+    + 'Olive oil: 900 kcal, 0g protein per 100ml (1 tsp = 5ml = 45 kcal)\n'
+    + 'Cooking spray (1 spray): 5 kcal, 0g protein\n'
+    + 'Peanut butter: 600 kcal, 25g protein per 100g\n'
+    + 'Honey: 300 kcal, 0g protein per 100g (1 tsp = 7g = 21 kcal)\n'
+    + 'Tinned chopped tomatoes: 32 kcal, 1.5g protein per 100g\n'
+    + 'Passata: 35 kcal, 1.5g protein per 100g\n'
+    + 'Spinach (raw): 23 kcal, 2.9g protein per 100g\n'
+    + 'Broccoli (raw): 34 kcal, 2.8g protein per 100g\n'
+    + 'Bell pepper (raw): 30 kcal, 1g protein per 100g (1 whole = 160g = 48 kcal)\n'
+    + 'Onion (raw): 40 kcal, 1g protein per 100g\n'
+    + 'Tinned tuna in brine (drained): 100 kcal, 24g protein per 100g\n'
+    + 'Tinned chickpeas (drained): 140 kcal, 8g protein per 100g\n\n'
+    + 'Rule 1 - CALORIE ACCURACY: Use the reference table above for all listed ingredients. For any ingredient not in the table, overestimate by 10-15%. Always account for all ingredients including oils, sauces and toppings. When scaling a JCKD recipe, recalculate macros from scratch using actual ingredient quantities - never copy the macro numbers from the original recipe.\n'
+    + 'Rule 2 - RAW WEIGHTS: All meat, fish, poultry and protein sources must be listed as raw uncooked weight.\n'
+    + 'Rule 3 - OIL AND BUTTER: Use absolute minimum - max 1 tsp (5ml) oil or 5g butter per meal. Use cooking spray where possible.\n'
+    + 'Rule 4 - SPECIFIC INGREDIENTS: Always specify exact type. Use "0% fat Greek yoghurt" not "Greek yoghurt", "extra lean beef mince (5% fat)" not "beef mince", "skimmed milk" not "milk".\n'
+    + 'Rule 5 - HIGH PROTEIN: Each meal must contain at least ' + minPro + 'g protein.\n'
+    + 'Rule 6 - QUANTITIES: All ingredient quantities must be in grams or millilitres. Exception: very low-calorie veg like spinach or herbs can use "handful".\n'
+    + 'Rule 7 - RECIPE FORMAT: Write recipes as numbered steps. E.g. "1. Season 150g raw chicken breast. 2. Heat 1 spray of cooking spray in a pan. 3. Cook chicken for 6 mins each side."\n'
+    + 'Rule 8 - DAY LABEL must be exactly: "Day 1".\n\n'
+    + 'Respond ONLY with valid raw JSON, no markdown, no extra text:\n'
+    + '{"weeklyAvgCalories":number,"weeklyAvgProtein":number,"days":[{"day":"Day 1","totalCalories":number,"totalProtein":number,"meals":[{"name":"string","calories":number,"protein":number,"recipe":"1. step. 2. step."}]}],"shoppingList":["ingredient - Xg/ml"]}';
 }
 
-function go(){
-  var cal=document.getElementById('cal').value;
-  var pro=document.getElementById('pro').value;
-  var mls=document.getElementById('mls').value;
-  var numDays='1';
-  var dayLabels=['Day 1'];
+function go() {
+  var cal = document.getElementById('cal').value;
+  var pro = document.getElementById('pro').value;
+  var mls = document.getElementById('mls').value;
+  var diet = document.getElementById('diet').value;
+  var ing = document.getElementById('ing').value;
+  var err = document.getElementById('err');
 
-  var prompt=buildPrompt(cal,pro,mls,numDays,diet,ing,vol,dayLabels);
+  err.style.display = 'none';
+  if (!cal || !pro || !mls) {
+    err.textContent = 'PLEASE FILL IN CALORIES, PROTEIN AND MEALS PER DAY.';
+    err.style.display = 'block';
+    return;
+  }
 
-  fetch('/api/generate',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:6000,messages:[{role:'user',content:prompt}]})
-  }).then(function(r){
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  li = 0;
+  document.getElementById('lmsg').textContent = LM[0];
+  lv = setInterval(function() {
+    li = (li + 1) % LM.length;
+    document.getElementById('lmsg').textContent = LM[li];
+  }, 2200);
+
+  var prompt = buildPrompt(cal, pro, mls, diet, ing);
+
+  fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 6000, messages: [{ role: 'user', content: prompt }] })
+  }).then(function(r) {
     clearInterval(lv);
-    if(!r.ok){return r.text().then(function(t){throw new Error('API error '+r.status+': '+t);});}
+    if (!r.ok) { return r.text().then(function(t) { throw new Error('API error ' + r.status + ': ' + t); }); }
     return r.json();
-  }).then(function(d){
-    var txt=(d.content||[]).reduce(function(a,b){return a+(b.type==='text'?b.text:'');},'');
-    var plan=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    render(plan,parseInt(cal),parseInt(pro));
-  }).catch(function(e){
+  }).then(function(d) {
+    var txt = (d.content || []).reduce(function(a, b) { return a + (b.type === 'text' ? b.text : ''); }, '');
+    var plan = JSON.parse(txt.replace(/```json|```/g, '').trim());
+    render(plan, parseInt(cal), parseInt(pro));
+  }).catch(function(e) {
     clearInterval(lv);
-    document.getElementById('loading').style.display='none';
-    document.getElementById('form').style.display='block';
-    err.textContent='ERROR: '+e.message;
-    err.style.display='block';
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('form').style.display = 'block';
+    err.textContent = 'ERROR: ' + e.message;
+    err.style.display = 'block';
   });
 }
 
-function render(p,cal,pro){
-  document.getElementById('loading').style.display='none';
-  var avgCal=Math.round(p.weeklyAvgCalories),avgPro=Math.round(p.weeklyAvgProtein);
-  document.getElementById('stats').innerHTML=
-    '<div class="sc"><div class="sv">'+cal+'</div><div class="sk">CAL TARGET</div></div>'+
-    '<div class="sc"><div class="sv">'+pro+'G</div><div class="sk">PROTEIN TARGET</div></div>'+
-    '<div class="sc"><div class="sv" style="color:'+(Math.abs(avgCal-cal)<=150?'#dce125':'#e84545')+'">'+avgCal+'</div><div class="sk">AVG DAILY CALS</div></div>'+
-    '<div class="sc"><div class="sv" style="color:'+(Math.abs(avgPro-pro)<=15?'#dce125':'#e84545')+'">'+avgPro+'G</div><div class="sk">AVG PROTEIN</div></div>';
+function render(p, cal, pro) {
+  document.getElementById('loading').style.display = 'none';
+  var avgCal = Math.round(p.weeklyAvgCalories), avgPro = Math.round(p.weeklyAvgProtein);
+  document.getElementById('stats').innerHTML =
+    '<div class="sc"><div class="sv">' + cal + '</div><div class="sk">CAL TARGET</div></div>' +
+    '<div class="sc"><div class="sv">' + pro + 'G</div><div class="sk">PROTEIN TARGET</div></div>' +
+    '<div class="sc"><div class="sv" style="color:' + (Math.abs(avgCal - cal) <= 150 ? '#dce125' : '#e84545') + '">' + avgCal + '</div><div class="sk">TOTAL CALS</div></div>' +
+    '<div class="sc"><div class="sv" style="color:' + (Math.abs(avgPro - pro) <= 15 ? '#dce125' : '#e84545') + '">' + avgPro + 'G</div><div class="sk">TOTAL PROTEIN</div></div>';
 
-  var html='';
-  p.days.forEach(function(d,di){
-    var cp=Math.min(100,Math.round(d.totalCalories/cal*100));
-    var pp=Math.min(100,Math.round(d.totalProtein/pro*100));
-    var cOver=d.totalCalories>cal*1.1,pOver=d.totalProtein>pro*1.1;
-    var mealsHtml='';
-    d.meals.forEach(function(m,mi){
-      var rid='r'+di+'_'+mi;
-      var recipeHtml=m.recipe
-        .replace(/(\d+)\.\s+/g,function(match,n){return n==='1'?'<ol><li>':'</li><li>';})
-        +'</li></ol>';
-      mealsHtml+='<div class="meal">'
-        +'<div class="mn">'+m.name+'</div>'
-        +'<div class="mm">'+m.calories+' KCAL / '+m.protein+'G PROTEIN</div>'
-        +'<button class="rb" onclick="toggleRec(this,\''+rid+'\')">VIEW RECIPE</button>'
-        +'<div class="rc" id="'+rid+'">'+recipeHtml+'</div>'
-        +'</div>';
+  var html = '';
+  p.days.forEach(function(d, di) {
+    var cp = Math.min(100, Math.round(d.totalCalories / cal * 100));
+    var pp = Math.min(100, Math.round(d.totalProtein / pro * 100));
+    var cOver = d.totalCalories > cal * 1.1, pOver = d.totalProtein > pro * 1.1;
+    var mealsHtml = '';
+    d.meals.forEach(function(m, mi) {
+      var rid = 'r' + di + '_' + mi;
+      var recipeHtml = m.recipe.replace(/(\d+)\.\s+/g, function(match, n) { return n === '1' ? '<ol><li>' : '</li><li>'; }) + '</li></ol>';
+      mealsHtml += '<div class="meal">'
+        + '<div class="mn">' + m.name + '</div>'
+        + '<div class="mm">' + m.calories + ' KCAL / ' + m.protein + 'G PROTEIN</div>'
+        + '<button class="rb" onclick="toggleRec(this,\'' + rid + '\')">VIEW RECIPE</button>'
+        + '<div class="rc" id="' + rid + '">' + recipeHtml + '</div>'
+        + '</div>';
     });
-    html+='<div class="day">'
-      +'<div class="dh" onclick="toggleDay(\'db'+di+'\')">'
-      +'<span class="dn">'+d.day+'</span>'
-      +'<span class="dm">'+d.totalCalories+' KCAL / '+d.totalProtein+'G PROTEIN</span>'
-      +'</div>'
-      +'<div class="db" id="db'+di+'">'
-      +'<div class="bl">CALORIES: '+d.totalCalories+' / '+cal+'</div>'
-      +'<div class="bt"><div class="bf'+(cOver?' hi':'')+'" style="width:'+cp+'%"></div></div>'
-      +'<div class="bl">PROTEIN: '+d.totalProtein+'G / '+pro+'G</div>'
-      +'<div class="bt"><div class="bf'+(pOver?' hi':'')+'" style="width:'+pp+'%"></div></div>'
-      +mealsHtml
-      +'</div></div>';
+    html += '<div class="day">'
+      + '<div class="dh" onclick="toggleDay(\'db' + di + '\')">'
+      + '<span class="dn">' + d.day + '</span>'
+      + '<span class="dm">' + d.totalCalories + ' KCAL / ' + d.totalProtein + 'G PROTEIN</span>'
+      + '</div>'
+      + '<div class="db open" id="db' + di + '">'
+      + '<div class="bl">CALORIES: ' + d.totalCalories + ' / ' + cal + '</div>'
+      + '<div class="bt"><div class="bf' + (cOver ? ' hi' : '') + '" style="width:' + cp + '%"></div></div>'
+      + '<div class="bl">PROTEIN: ' + d.totalProtein + 'G / ' + pro + 'G</div>'
+      + '<div class="bt"><div class="bf' + (pOver ? ' hi' : '') + '" style="width:' + pp + '%"></div></div>'
+      + mealsHtml
+      + '</div></div>';
   });
-  document.getElementById('meals').innerHTML=html;
+  document.getElementById('meals').innerHTML = html;
 
-  var shopHtml='<div class="card"><div class="sec">SHOPPING LIST</div><div class="sc2">';
-  p.shoppingList.forEach(function(item){shopHtml+='<div class="si">'+item+'</div>';});
-  shopHtml+='</div></div>';
-  document.getElementById('shop').innerHTML=shopHtml;
-  document.getElementById('out').style.display='block';
+  var shopHtml = '<div class="card"><div class="sec">SHOPPING LIST</div><div class="sc2">';
+  p.shoppingList.forEach(function(item) { shopHtml += '<div class="si">' + item + '</div>'; });
+  shopHtml += '</div></div>';
+  document.getElementById('shop').innerHTML = shopHtml;
+  document.getElementById('out').style.display = 'block';
 }
-
-updateVol(3);
 </script>
 </body>
 </html>
